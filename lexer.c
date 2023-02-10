@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "lexer.h"
 #include "lexer_output.h"
+#include <ctype.h>
 
 struct lexer{
     char* filename;
@@ -26,20 +28,36 @@ void lexer_close(){
 // Is the lexer's token stream finished
 // (either at EOF or not open)?
 bool lexer_done(){
-    return(false);
+    if(feof(lexer.filepointer) || (lexer.filepointer == NULL)){
+        return(true);
+    }else{
+        return(false);
+    }
 }
+
+
+
+//important reading info by Jacob
+// fgets gets up to a newline
+// fscanf gets up to blank space
+// fgetc gets a character
+
+
 
 // Requires: !lexer_done()
 // Return the next token in the input file,
 // advancing in the input
 token lexer_next(){
     token t;
-    char buff[255];
-    fgets(buff, 255, lexer.filepointer);
-    printf("%s", buff);
+    char* text[50];
+    fscanf(lexer.filepointer, "%s", &text); 
 
-    t.text = buff;
-    t.typ = varsym;
+    t.typ = constsym;
+    t.filename = lexer.filename;
+    t.line = 1;
+    t.column = 1;
+    t.text = text;
+    t.value = 0;
 
     return(t);
 }
@@ -66,11 +84,12 @@ unsigned int lexer_column(){
 int main(int argc, char *argv[]){
     lexer.filename = argv[1];
 
+    //Open the lexer
     lexer_open(lexer.filename);
 
     //Call lexer_output to start printing tokens
     lexer_output();
 
     //Call lexer_close
-
+    lexer_close();
 }
