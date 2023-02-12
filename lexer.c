@@ -73,13 +73,19 @@ const char *lexer_filename(){
 // Requires: !lexer_done()
 // Return the line number of the next token
 unsigned int lexer_line(){
-
+    if (!lexer_done())
+    {
+        return lexer_next().line;
+    }
 }
 
 // Requires: !lexer_done()
 // Return the column number of the next token
 unsigned int lexer_column(){
-
+    if (!lexer_done)
+    {
+        return lexer_next().column;
+    }
 }
 
 
