@@ -49,16 +49,40 @@ bool lexer_done(){
 // advancing in the input
 token lexer_next(){
     token t;
-    char text[50] = "";
-    char ch = getc(lexer.filepointer);
-    strcat(text, ch);
 
-    printf("%s", text);
+
+
+    //Read in first char
+    char ch = getc(lexer.filepointer);
+    strncat(t.text, &ch, 1);
+
+
+
+    if(isalpha(ch)){
+        //Keep reading in more char until there are no more
+        do{
+            ch = fgetc(lexer.filepointer);
+            if(!isalnum(ch)){
+                //if this is not a letter or digit, put it back on the input.
+                fputc(ch, lexer.filepointer);
+                break;
+            }
+            strncat(t.text, &ch, 1);
+        }while(1);
+
+        
+    }else if(isdigit(ch)){
+
+    }else{
+
+    }
+
+
+
     t.typ = constsym;
     t.filename = lexer.filename;
     t.line = 1;
     t.column = 1;
-    //t.text = text;
     t.value = 0;
 
     return(t);
