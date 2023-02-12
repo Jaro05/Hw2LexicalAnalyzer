@@ -49,14 +49,16 @@ bool lexer_done(){
 // advancing in the input
 token lexer_next(){
     token t;
-    char* text[50];
-    fscanf(lexer.filepointer, "%s", &text); 
+    char text[50] = "";
+    char ch = getc(lexer.filepointer);
+    strcat(text, ch);
 
+    printf("%s", text);
     t.typ = constsym;
     t.filename = lexer.filename;
     t.line = 1;
     t.column = 1;
-    t.text = text;
+    //t.text = text;
     t.value = 0;
 
     return(t);
