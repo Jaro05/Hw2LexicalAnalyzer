@@ -49,14 +49,12 @@ bool lexer_done(){
 // advancing in the input
 token lexer_next(){
     token t;
-
+    
 
 
     //Read in first char
     char ch = getc(lexer.filepointer);
     strncat(t.text, &ch, 1);
-
-
 
     if(isalpha(ch)){
         //Keep reading in more char until there are no more
@@ -70,8 +68,12 @@ token lexer_next(){
             strncat(t.text, &ch, 1);
         }while(1);
 
+
+        
+
         
     }else if(isdigit(ch)){
+
 
     }else{
 
