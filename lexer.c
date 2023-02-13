@@ -8,6 +8,8 @@
 struct lexer{
     char* filename;
     FILE* filepointer;
+    int column;
+    int line;
 }lexer;
 struct lexer;
 
@@ -51,16 +53,25 @@ token lexer_next(){
     token t;
     t.text[0] = '\0';
 
+
     //Read in first char
     char ch = fgetc(lexer.filepointer);
+    lexer.column++;
 
     if(ch == ' '){
         //if it is a space move on to the next one.
         ch = fgetc(lexer.filepointer);
+        lexer.column++;
     }else if(ch == '\n'){
         ch = fgetc(lexer.filepointer);
+        lexer.line++;
+        lexer.column = 1;
     } 
-  
+
+    
+    t.filename = lexer.filename;
+    t.line = lexer.line;
+    t.column = lexer.column;
     strncat(t.text, &ch, 1);
 
     
@@ -68,9 +79,11 @@ token lexer_next(){
         //Keep reading in more char until there are no more
         do{
             ch = fgetc(lexer.filepointer);
+            lexer.column++;
             if(!isalnum(ch)){
                 //if this is not a letter or digit, put it back on the input.
                 ungetc(ch, lexer.filepointer);
+                lexer.column--;
                 break;
             }
             strncat(t.text, &ch, 1);
@@ -86,10 +99,7 @@ token lexer_next(){
 
 
     t.typ = constsym;
-    t.filename = lexer.filename;
-    t.line = 1;
-    t.column = 1;
-    t.value = 0;
+
 
     return(t);
 }
@@ -103,18 +113,20 @@ const char *lexer_filename(){
 // Requires: !lexer_done()
 // Return the line number of the next token
 unsigned int lexer_line(){
-
+    return(lexer.line);
 }
 
 // Requires: !lexer_done()
 // Return the column number of the next token
 unsigned int lexer_column(){
-
+    return(lexer.column);
 }
 
 
 int main(int argc, char *argv[]){
     lexer.filename = argv[1];
+    lexer.column = 0;
+    lexer.line = 1;
 
     //Open the lexer
     lexer_open(lexer.filename);
