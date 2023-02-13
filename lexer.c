@@ -38,14 +38,6 @@ bool lexer_done(){
 }
 
 
-
-//important reading info by Jacob
-// fgets gets up to a newline
-// fscanf gets up to blank space
-// fgetc gets a character
-
-
-
 // Requires: !lexer_done()
 // Return the next token in the input file,
 // advancing in the input
@@ -58,8 +50,8 @@ token lexer_next(){
     char ch = fgetc(lexer.filepointer);
     lexer.column++;
 
+    //If the char is a space or a newline, move on to the next char and update the line/column.
     if(ch == ' '){
-        //if it is a space move on to the next one.
         ch = fgetc(lexer.filepointer);
         lexer.column++;
     }else if(ch == '\n'){
@@ -68,18 +60,20 @@ token lexer_next(){
         lexer.column = 1;
     } 
     
+    //Set the variables for this token
     t.filename = lexer.filename;
     t.line = lexer.line;
     t.column = lexer.column;
     strncat(t.text, &ch, 1);
     
+    //If the character is a letter
     if(isalpha(ch)){
-        //Keep reading in more char until there are no more
+        //Keep reading in more char until there are no more for this word.
         do{
             ch = fgetc(lexer.filepointer);
             lexer.column++;
             if(!isalnum(ch)){
-                //if this is not a letter or digit, put it back on the input.
+                //If this char is not a letter or digit, put it back on the input.
                 ungetc(ch, lexer.filepointer);
                 lexer.column--;
                 break;
@@ -87,6 +81,7 @@ token lexer_next(){
             strncat(t.text, &ch, 1);
         }while(1);
 
+        //Assign the correct type for the token.
         if(strcmp(t.text, "const") == 0){
             t.typ = constsym;
         }else if(strcmp(t.text, "var") == 0){
