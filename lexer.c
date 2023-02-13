@@ -21,7 +21,7 @@ void lexer_open(const char *fname){
     lexer.filepointer = fopen(fname, "r");
     //If the file cannot be read, this is an error
     if(lexer.filepointer == NULL){
-        
+
     }
 }
 
@@ -137,7 +137,7 @@ token lexer_next(){
         } 
         while (1);
         t.typ = numbersym;
-        t.value = atoi(ch);
+        // t.value = atoi(ch);
     //JORDAN do this part of the if else clause, when the character is a symbol.
     }else{
         //this is temporary just for compiling reasons.
