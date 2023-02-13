@@ -67,13 +67,11 @@ token lexer_next(){
         lexer.line++;
         lexer.column = 1;
     } 
-
     
     t.filename = lexer.filename;
     t.line = lexer.line;
     t.column = lexer.column;
     strncat(t.text, &ch, 1);
-
     
     if(isalpha(ch)){
         //Keep reading in more char until there are no more
@@ -89,17 +87,50 @@ token lexer_next(){
             strncat(t.text, &ch, 1);
         }while(1);
 
-        
+        if(strcmp(t.text, "const") == 0){
+            t.typ = constsym;
+        }else if(strcmp(t.text, "var") == 0){
+            t.typ = varsym;
+        }else if(strcmp(t.text, "procedure") == 0){
+            t.typ = procsym;
+        }else if(strcmp(t.text, "call") == 0){
+            t.typ = callsym;
+        }else if(strcmp(t.text, "begin") == 0){
+            t.typ = beginsym;
+        }else if(strcmp(t.text, "end") == 0){
+            t.typ = endsym;
+        }else if(strcmp(t.text, "if") == 0){
+            t.typ = ifsym;
+        }else if(strcmp(t.text, "then") == 0){
+            t.typ = thensym;
+        }else if(strcmp(t.text, "else") == 0){
+            t.typ = elsesym;
+        }else if(strcmp(t.text, "while") == 0){
+            t.typ = whilesym;
+        }else if(strcmp(t.text, "do") == 0){
+            t.typ = dosym;
+        }else if(strcmp(t.text, "read") == 0){
+            t.typ = readsym;
+        }else if(strcmp(t.text, "write") == 0){
+            t.typ = writesym;
+        }else if(strcmp(t.text, "skip") == 0){
+            t.typ = skipsym;
+        }else if(strcmp(t.text, "odd") == 0){
+            t.typ = oddsym;
+        }else{
+            t.typ = identsym;
+        }
+
+    //SAM do this part of the if else clause, when the character is a digit.
     }else if(isdigit(ch)){
+        //this is temporary just for compiling reasons.
+        t.typ = constsym;
 
-
+    //JORDAN do this part of the if else clause, when the character is a symbol.
     }else{
-
+        //this is temporary just for compiling reasons.
+        t.typ = constsym;
     }
-
-
-    t.typ = constsym;
-
 
     return(t);
 }
