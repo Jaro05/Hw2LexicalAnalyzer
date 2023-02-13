@@ -49,27 +49,33 @@ bool lexer_done(){
 // advancing in the input
 token lexer_next(){
     token t;
-    
-
+    t.text[0] = '\0';
 
     //Read in first char
-    char ch = getc(lexer.filepointer);
-    strncat(t.text, &ch, 1);
+    char ch = fgetc(lexer.filepointer);
 
+    if(ch == ' '){
+        //if it is a space move on to the next one.
+        ch = fgetc(lexer.filepointer);
+    }else if(ch == '\n'){
+        ch = fgetc(lexer.filepointer);
+    } 
+  
+    strncat(t.text, &ch, 1);
+    printf("%c", ch);
+
+    
     if(isalpha(ch)){
         //Keep reading in more char until there are no more
         do{
             ch = fgetc(lexer.filepointer);
             if(!isalnum(ch)){
                 //if this is not a letter or digit, put it back on the input.
-                fputc(ch, lexer.filepointer);
+                //fputc(ch, lexer.filepointer);
                 break;
             }
             strncat(t.text, &ch, 1);
         }while(1);
-
-
-        
 
         
     }else if(isdigit(ch)){
@@ -78,7 +84,6 @@ token lexer_next(){
     }else{
 
     }
-
 
 
     t.typ = constsym;
@@ -99,19 +104,13 @@ const char *lexer_filename(){
 // Requires: !lexer_done()
 // Return the line number of the next token
 unsigned int lexer_line(){
-    if (!lexer_done())
-    {
-        return lexer_next().line;
-    }
+
 }
 
 // Requires: !lexer_done()
 // Return the column number of the next token
 unsigned int lexer_column(){
-    if (!lexer_done)
-    {
-        return lexer_next().column;
-    }
+
 }
 
 
