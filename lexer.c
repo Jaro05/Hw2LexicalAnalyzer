@@ -47,6 +47,7 @@ bool lexer_done(){
 // advancing in the input
 token lexer_next(){
     token t;
+    t.text = (char*)malloc(500 * sizeof(char)); 
     t.text[0] = '\0';
 
 
@@ -62,14 +63,14 @@ token lexer_next(){
         ch = fgetc(lexer.filepointer);
         lexer.line++;
         lexer.column = 1;
-    } 
+    }
     
     //Set the variables for this token
     t.filename = lexer.filename;
     t.line = lexer.line;
     t.column = lexer.column;
     strncat(t.text, &ch, 1);
-    
+   
     //If the character is a letter
     if(isalpha(ch)){
         //Keep reading in more char until there are no more for this word.
