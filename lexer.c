@@ -62,7 +62,6 @@ token lexer_next(){
     } 
   
     strncat(t.text, &ch, 1);
-    printf("%c", ch);
 
     
     if(isalpha(ch)){
@@ -71,7 +70,7 @@ token lexer_next(){
             ch = fgetc(lexer.filepointer);
             if(!isalnum(ch)){
                 //if this is not a letter or digit, put it back on the input.
-                //fputc(ch, lexer.filepointer);
+                ungetc(ch, lexer.filepointer);
                 break;
             }
             strncat(t.text, &ch, 1);
