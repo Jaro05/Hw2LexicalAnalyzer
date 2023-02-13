@@ -119,6 +119,10 @@ token lexer_next(){
             t.typ = oddsym;
         }else{
             t.typ = identsym;
+            if(strlen(t.text) > MAX_IDENT_LENGTH){
+                //error
+                lexical_error(t.filename, t.line, t.column, "Identifier starting %s at is too long!", t.text);
+            }
         }
 
     //SAM do this part of the if else clause, when the character is a digit.
