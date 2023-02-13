@@ -19,6 +19,10 @@ struct lexer;
 // from the given file name
 void lexer_open(const char *fname){
     lexer.filepointer = fopen(fname, "r");
+    //If the file cannot be read, this is an error
+    if(lexer.filepointer == NULL){
+        
+    }
 }
 
 // Close the file the lexer is working on
@@ -174,4 +178,5 @@ int main(int argc, char *argv[]){
 
     //Call lexer_close
     lexer_close();
+    exit(EXIT_SUCCESS);
 }
