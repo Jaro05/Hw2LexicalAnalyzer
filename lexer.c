@@ -118,9 +118,21 @@ token lexer_next(){
 
     //SAM do this part of the if else clause, when the character is a digit.
     }else if(isdigit(ch)){
-        //this is temporary just for compiling reasons.
-        t.typ = constsym;
-
+        //read thru the whole number then assign it to token
+        do
+        {
+            ch = fgetc(lexer.filepointer);
+            lexer.column++;
+            if (!isdigit(ch))
+            {
+                ungetc(ch, lexer.filepointer);
+                lexer.column--;
+                break;
+            }
+            strncat(t.text, &ch, 1);
+        } 
+        while (1);
+        t.typ = numbersym;
     //JORDAN do this part of the if else clause, when the character is a symbol.
     }else{
         //this is temporary just for compiling reasons.
