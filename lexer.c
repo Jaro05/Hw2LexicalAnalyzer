@@ -222,6 +222,7 @@ token lexer_next(){
         else if (ch == ':')
         {
             ch = fgetc(lexer.filepointer);
+            lexer.column++;
             if (ch == '=')
             {
                 strncat(t.text, &ch, 1);
