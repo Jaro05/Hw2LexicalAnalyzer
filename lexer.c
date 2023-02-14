@@ -273,6 +273,8 @@ token lexer_next(){
         else if (ch == EOF)
         {
             t.typ = endsym;
+        }else{
+            t.typ = constsym;
         }
 
         
