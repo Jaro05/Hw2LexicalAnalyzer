@@ -7,8 +7,6 @@
 #include "utilities.h"
 #include "limits.h"
 
-static bool comment = true;
-
 
 struct lexer{
     char* filename;
