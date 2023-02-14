@@ -4,6 +4,7 @@
 #include "lexer.h"
 #include "lexer_output.h"
 #include <ctype.h>
+#include "utilities.h"
 
 struct lexer{
     char* filename;
