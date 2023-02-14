@@ -7,8 +7,6 @@
 #include "utilities.h"
 #include "limits.h"
 
-static bool comment = true;
-
 
 struct lexer{
     char* filename;
@@ -72,7 +70,6 @@ token lexer_next(){
         }
         else if (ch == '#')
         {
-            comment = false;
             while (ch != '\n')
             {
                 ch = fgetc(lexer.filepointer);
