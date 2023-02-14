@@ -77,6 +77,7 @@ token lexer_next(){
             ch = fgetc(lexer.filepointer);
 
         }
+        ch = fgetc(lexer.filepointer);
         lexer.line++;
         lexer.column = 1;
         // maybe a hypothetical error here in case its EOF
@@ -273,7 +274,9 @@ token lexer_next(){
         else if (ch == EOF)
         {
             t.typ = eofsym;
+            t.text = NULL;
         }else{
+            // throw an error
             t.typ = constsym;
         }
 
