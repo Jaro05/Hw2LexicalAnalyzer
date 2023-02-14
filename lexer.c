@@ -5,6 +5,9 @@
 #include "lexer_output.h"
 #include <ctype.h>
 
+static bool comment = true;
+
+
 struct lexer{
     char* filename;
     FILE* filepointer;
@@ -63,6 +66,18 @@ token lexer_next(){
         ch = fgetc(lexer.filepointer);
         lexer.line++;
         lexer.column = 1;
+    }
+    else if (ch == '#')
+    {
+        comment = false;
+        while (ch != '\n')
+        {
+            ch = fgetc(lexer.filepointer);
+
+        }
+        lexer.line++;
+        lexer.column = 1;
+        // maybe a hypothetical error here in case its EOF
     }
     
     //Set the variables for this token
@@ -141,8 +156,108 @@ token lexer_next(){
         t.value = atoi(t.text);
     //JORDAN do this part of the if else clause, when the character is a symbol.
     }else{
-        //this is temporary just for compiling reasons.
-        t.typ = constsym;
+        
+        if (ch == ';')
+        {
+            t.typ = semisym;
+        }
+        else if (ch == ',')
+        {
+            t.typ = commasym;
+        }
+        else if (ch == '.')
+        {
+            t.typ = periodsym;
+        }
+        else if (ch == '(')
+        {
+            t.typ = lparensym;
+        }
+        else if (ch == ')')
+        {
+            t.typ = rparensym;
+        }
+        else if (ch == '=')
+        {
+            t.typ = eqsym;
+        }
+        else if (ch == '+')
+        {
+            t.typ = plussym;
+        }
+        else if (ch == '-')
+        {
+            t.typ = minussym;
+        }
+        else if (ch == '*')
+        {
+            t.typ = multsym;
+        }
+        else if (ch == '/')
+        {
+            t.typ = divsym;
+        }
+        else if (ch == ':')
+        {
+            ch = fgetc(lexer.filepointer);
+            if (ch == '=')
+            {
+                strncat(t.text, &ch, 1);
+                t.typ = becomessym;
+            }
+            else
+            {
+                exit(EXIT_FAILURE);
+            }
+
+        }
+        else if (ch == '<')
+        {
+            ch = fgetc(lexer.filepointer);
+            if (ch == '=')
+            {
+                strncat(t.text, &ch, 1);
+                t.typ = leqsym;
+            }
+            else if (ch == '>')
+            {
+               strncat(t.text, &ch, 1);
+                t.typ = neqsym; 
+            }
+            else
+            {
+                t.typ = lessym;
+                ungetc(ch, lexer.filepointer);
+                lexer.column--;
+            }
+            t.typ = constsym;
+
+        }
+        else if (ch == '>')
+        {
+            strncat(t.text, &ch, 1);
+            ch = fgetc(lexer.filepointer);
+            if (ch == '=')
+            {
+                strncat(t.text, &ch, 1);
+                t.typ = geqsym;
+            }
+            else
+            {
+                t.typ = gtrsym;
+                ungetc(ch, lexer.filepointer);
+                lexer.column--;
+            }
+            //t.typ = constsym;
+
+        }
+        else if (ch == EOF)
+        {
+            t.typ = endsym;
+        }
+
+        
+
     }
 
     return(t);
