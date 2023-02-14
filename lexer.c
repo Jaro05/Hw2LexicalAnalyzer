@@ -4,6 +4,8 @@
 #include "lexer.h"
 #include "lexer_output.h"
 #include <ctype.h>
+#include "utilities.h"
+#include "limits.h"
 
 static bool comment = true;
 
@@ -134,6 +136,10 @@ token lexer_next(){
             t.typ = oddsym;
         }else{
             t.typ = identsym;
+            if(strlen(t.text) > MAX_IDENT_LENGTH){
+                //error
+                lexical_error(t.filename, t.line, t.column, "Identifier starting %s at is too long!", t.text);
+            }
         }
 
     //SAM do this part of the if else clause, when the character is a digit.
@@ -153,7 +159,20 @@ token lexer_next(){
         } 
         while (1);
         t.typ = numbersym;
-        t.value = atoi(t.text);
+        if (atoi(t.text) < SHRT_MIN)
+        {
+            lexical_error(t.filename, t.line, t.column, "The value %s is too small for a short!", t.text);
+
+        }
+        else if (atoi(t.text) > SHRT_MAX)
+        {
+            lexical_error(t.filename, t.line, t.column, "The value %s is too large for a short!", t.text);
+        }
+        else
+        {
+            t.value = atoi(t.text);
+        }
+
     //JORDAN do this part of the if else clause, when the character is a symbol.
     }else{
         
