@@ -279,7 +279,7 @@ token lexer_next(){
             t.typ = eofsym;
             t.text = NULL;
         }else{
-            // throw an error
+            // throw an error for unrecognized symbol
             t.typ = constsym;
         }
 
