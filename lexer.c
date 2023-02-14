@@ -274,6 +274,10 @@ token lexer_next(){
         {
             t.typ = endsym;
         }
+        else
+        {
+            t.typ = constsym;
+        }
 
         
 
