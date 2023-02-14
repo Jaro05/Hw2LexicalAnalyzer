@@ -52,7 +52,7 @@ bool lexer_done(){
 // advancing in the input
 token lexer_next(){
     token t;
-    t.text = (char*)malloc(500 * sizeof(char)); 
+    t.text = (char*)malloc(2000 * sizeof(char)); 
     t.text[0] = '\0';
 
 
@@ -141,7 +141,7 @@ token lexer_next(){
             t.typ = identsym;
             if(strlen(t.text) > MAX_IDENT_LENGTH){
                 //error
-                lexical_error(t.filename, t.line, t.column, "Identifier starting %s at is too long!", t.text);
+                lexical_error(t.filename, t.line, t.column, "Identifier starting \"%.255s\" is too long!", t.text);
             }
         }
 
