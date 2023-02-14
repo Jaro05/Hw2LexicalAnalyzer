@@ -26,7 +26,7 @@ void lexer_open(const char *fname){
     lexer.filepointer = fopen(fname, "r");
     //If the file cannot be read, this is an error
     if(lexer.filepointer == NULL){
-
+        lexical_error(lexer.filename, lexer.line, lexer.column, "Can not open the file \'%s\'", lexer.filename);
     }
 }
 
@@ -52,7 +52,7 @@ bool lexer_done(){
 // advancing in the input
 token lexer_next(){
     token t;
-    t.text = (char*)malloc(500 * sizeof(char)); 
+    t.text = (char*)malloc(2000 * sizeof(char)); 
     t.text[0] = '\0';
 
 
@@ -72,16 +72,17 @@ token lexer_next(){
         }
         else if (ch == '#')
         {
-            comment = false;
             while (ch != '\n')
             {
+                if(ch == EOF){
+                    lexical_error(lexer.filename, lexer.line, lexer.column, "File ended while reading comment!");
+                }
                 ch = fgetc(lexer.filepointer);
-
+                lexer.column++;
             }
             ch = fgetc(lexer.filepointer);
             lexer.line++;
             lexer.column = 1;
-            // maybe a hypothetical error here in case its EOF
         }
     }
     
@@ -141,11 +142,10 @@ token lexer_next(){
             t.typ = identsym;
             if(strlen(t.text) > MAX_IDENT_LENGTH){
                 //error
-                lexical_error(t.filename, t.line, t.column, "Identifier starting %s at is too long!", t.text);
+                lexical_error(t.filename, t.line, t.column, "Identifier starting \"%.255s\" is too long!", t.text);
             }
         }
 
-    //SAM do this part of the if else clause, when the character is a digit.
     }else if(isdigit(ch)){
         //read thru the whole number then assign it to token
         do
@@ -164,19 +164,17 @@ token lexer_next(){
         t.typ = numbersym;
         if (atoi(t.text) < SHRT_MIN)
         {
-            lexical_error(t.filename, t.line, t.column, "The value %s is too small for a short!", t.text);
+            lexical_error(t.filename, t.line, t.column, "The value %d is too small for a short!", atoi(t.text));
 
         }
         else if (atoi(t.text) > SHRT_MAX)
         {
-            lexical_error(t.filename, t.line, t.column, "The value %s is too large for a short!", t.text);
+            lexical_error(t.filename, t.line, t.column, "The value %d is too large for a short!", atoi(t.text));
         }
         else
         {
             t.value = atoi(t.text);
         }
-
-    //JORDAN do this part of the if else clause, when the character is a symbol.
     }else{
         
         if (ch == ';')
@@ -230,6 +228,7 @@ token lexer_next(){
             }
             else
             {
+                lexical_error(t.filename, lexer.line, lexer.column, "Expecting '=' after a colon, not \'%c\'", ch);
                 exit(EXIT_FAILURE);
             }
 
@@ -237,6 +236,7 @@ token lexer_next(){
         else if (ch == '<')
         {
             ch = fgetc(lexer.filepointer);
+            lexer.column++;
             if (ch == '=')
             {
                 strncat(t.text, &ch, 1);
@@ -253,13 +253,12 @@ token lexer_next(){
                 ungetc(ch, lexer.filepointer);
                 lexer.column--;
             }
-            t.typ = constsym;
 
         }
         else if (ch == '>')
         {
-            strncat(t.text, &ch, 1);
             ch = fgetc(lexer.filepointer);
+            lexer.column++;
             if (ch == '=')
             {
                 strncat(t.text, &ch, 1);
@@ -271,20 +270,14 @@ token lexer_next(){
                 ungetc(ch, lexer.filepointer);
                 lexer.column--;
             }
-            //t.typ = constsym;
-
         }
         else if (ch == EOF)
         {
             t.typ = eofsym;
             t.text = NULL;
         }else{
-            // throw an error
-            t.typ = constsym;
+            lexical_error(t.filename, t.line, t.column, "Illegal character \'%c\'", ch);
         }
-
-        
-
     }
 
     return(t);
