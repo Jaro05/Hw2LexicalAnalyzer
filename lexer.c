@@ -61,26 +61,28 @@ token lexer_next(){
     lexer.column++;
 
     //If the char is a space or a newline, move on to the next char and update the line/column.
-    if(ch == ' '){
-        ch = fgetc(lexer.filepointer);
-        lexer.column++;
-    }else if(ch == '\n'){
-        ch = fgetc(lexer.filepointer);
-        lexer.line++;
-        lexer.column = 1;
-    }
-    else if (ch == '#')
-    {
-        comment = false;
-        while (ch != '\n')
-        {
+    while(ch == ' ' || ch == '\n' || ch == '#'){
+        if(ch == ' '){
             ch = fgetc(lexer.filepointer);
-
+            lexer.column++;
+        }else if(ch == '\n'){
+            ch = fgetc(lexer.filepointer);
+            lexer.line++;
+            lexer.column = 1;
         }
-        ch = fgetc(lexer.filepointer);
-        lexer.line++;
-        lexer.column = 1;
-        // maybe a hypothetical error here in case its EOF
+        else if (ch == '#')
+        {
+            comment = false;
+            while (ch != '\n')
+            {
+                ch = fgetc(lexer.filepointer);
+
+            }
+            ch = fgetc(lexer.filepointer);
+            lexer.line++;
+            lexer.column = 1;
+            // maybe a hypothetical error here in case its EOF
+        }
     }
     
     //Set the variables for this token
