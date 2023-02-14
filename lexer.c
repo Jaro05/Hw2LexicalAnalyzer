@@ -237,6 +237,7 @@ token lexer_next(){
         else if (ch == '<')
         {
             ch = fgetc(lexer.filepointer);
+            lexer.column++;
             if (ch == '=')
             {
                 strncat(t.text, &ch, 1);
@@ -253,13 +254,12 @@ token lexer_next(){
                 ungetc(ch, lexer.filepointer);
                 lexer.column--;
             }
-            t.typ = constsym;
 
         }
         else if (ch == '>')
         {
-            strncat(t.text, &ch, 1);
             ch = fgetc(lexer.filepointer);
+            lexer.column++;
             if (ch == '=')
             {
                 strncat(t.text, &ch, 1);
