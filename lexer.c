@@ -5,6 +5,7 @@
 #include "lexer_output.h"
 #include <ctype.h>
 #include "utilities.h"
+#include "limits.h"
 
 struct lexer{
     char* filename;
@@ -143,7 +144,20 @@ token lexer_next(){
         } 
         while (1);
         t.typ = numbersym;
-        t.value = atoi(t.text);
+        if (atoi(t.text) < SHRT_MIN)
+        {
+            lexical_error(t.filename, t.line, t.column, "The value %s is too small for a short!", t.text);
+
+        }
+        else if (atoi(t.text) > SHRT_MAX)
+        {
+            lexical_error(t.filename, t.line, t.column, "The value %s is too large for a short!", t.text);
+        }
+        else
+        {
+            t.value = atoi(t.text);
+        }
+
     //JORDAN do this part of the if else clause, when the character is a symbol.
     }else{
         //this is temporary just for compiling reasons.
