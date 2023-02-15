@@ -59,7 +59,7 @@ token lexer_next(){
     lexer.column++;
 
     //If the char is a space or a newline, move on to the next char and update the line/column.
-    while(ch == ' ' || ch == '\n' || ch == '#'){
+    while(ch == ' ' || ch == '\n' || ch == '#' || ch == '\r'){
         if(ch == ' '){
             ch = fgetc(lexer.filepointer);
             lexer.column++;
@@ -67,6 +67,11 @@ token lexer_next(){
             ch = fgetc(lexer.filepointer);
             lexer.line++;
             lexer.column = 1;
+        }
+        else if (ch == '\r')
+        {
+            ch = fgetc(lexer.filepointer);
+
         }
         else if (ch == '#')
         {
@@ -162,19 +167,18 @@ token lexer_next(){
         t.typ = numbersym;
         if (atoi(t.text) < SHRT_MIN)
         {
-            lexical_error(t.filename, t.line, t.column, "The value %d is too small for a short!", atoi(t.text));
+            lexical_error(t.filename, t.line, t.column, "The value of %d is too small for a short!", atoi(t.text));
 
         }
         else if (atoi(t.text) > SHRT_MAX)
         {
-            lexical_error(t.filename, t.line, t.column, "The value %d is too large for a short!", atoi(t.text));
+            lexical_error(t.filename, t.line, t.column, "The value of %d is too large for a short!", atoi(t.text));
         }
         else
         {
             t.value = atoi(t.text);
         }
     }else{
-        
         if (ch == ';')
         {
             t.typ = semisym;
@@ -273,7 +277,9 @@ token lexer_next(){
         {
             t.typ = eofsym;
             t.text = NULL;
-        }else{
+        }
+        else{
+
             lexical_error(t.filename, t.line, t.column, "Illegal character \'%c\'", ch);
         }
     }
