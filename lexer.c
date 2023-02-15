@@ -280,7 +280,7 @@ token lexer_next(){
         }
         else{
 
-            lexical_error(t.filename, t.line, t.column, "Illegal character \'%c\'", ch);
+            lexical_error(t.filename, t.line, t.column, "Illegal character \'%c\' (%03o)", ch, ch);
         }
     }
 
